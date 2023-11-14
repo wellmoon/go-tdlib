@@ -4,10 +4,11 @@ import "C"
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/aliforever/go-tdlib/config"
-	"github.com/sirupsen/logrus"
 	"sync"
 	"unsafe"
+
+	"github.com/sirupsen/logrus"
+	"github.com/wellmoon/go-tdlib/config"
 )
 
 // #cgo linux CFLAGS: -I/usr/local/include

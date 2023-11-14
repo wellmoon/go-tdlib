@@ -1,6 +1,6 @@
 package outgoingevents
 
-import "github.com/aliforever/go-tdlib/entities"
+import "github.com/wellmoon/go-tdlib/entities"
 
 type JoinGroupCall struct {
 	GroupCallID   int64                   `json:"group_call_id"`

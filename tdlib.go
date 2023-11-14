@@ -10,14 +10,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/aliforever/go-tdlib/config"
-	"github.com/aliforever/go-tdlib/incomingevents"
-	"github.com/aliforever/go-tdlib/outgoingevents"
-	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
 	"math/rand"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
+	"github.com/wellmoon/go-tdlib/config"
+	"github.com/wellmoon/go-tdlib/incomingevents"
+	"github.com/wellmoon/go-tdlib/outgoingevents"
 )
 
 type TDLib struct {

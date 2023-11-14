@@ -3,7 +3,8 @@ package incomingevents
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/aliforever/go-tdlib/entities"
+
+	"github.com/wellmoon/go-tdlib/entities"
 )
 
 type UpdateMessageEdited struct {

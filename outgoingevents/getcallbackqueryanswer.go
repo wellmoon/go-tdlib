@@ -1,6 +1,6 @@
 package outgoingevents
 
-import "github.com/aliforever/go-tdlib/entities"
+import "github.com/wellmoon/go-tdlib/entities"
 
 type GetCallbackQueryAnswer struct {
 	ChatID    int64                          `json:"chat_id"`

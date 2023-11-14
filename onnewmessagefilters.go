@@ -1,8 +1,8 @@
 package tdlib
 
 import (
-	"github.com/aliforever/go-tdlib/entities"
-	"github.com/aliforever/go-tdlib/incomingevents"
+	"github.com/wellmoon/go-tdlib/entities"
+	"github.com/wellmoon/go-tdlib/incomingevents"
 )
 
 type newMessageHandler struct {

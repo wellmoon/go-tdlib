@@ -1,7 +1,7 @@
 package incomingevents
 
 import (
-	"github.com/aliforever/go-tdlib/entities"
+	"github.com/wellmoon/go-tdlib/entities"
 )
 
 type UpdateMessageContent struct {
