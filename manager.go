@@ -105,35 +105,35 @@ func (m *Manager) receiveNextUpdate(timeout float64) []byte {
 
 func (m *Manager) receiveUpdates() {
 	// text := ""
-	// for {
-	// 	updateBytes := m.receiveNextUpdate(10)
+	for {
+		updateBytes := m.receiveNextUpdate(10)
 
-	// 	if len(updateBytes) == 0 {
-	// 		continue
-	// 	}
-	// 	text = string(updateBytes)
-	// 	if !strings.Contains(text, "请点击正确答案") && !strings.Contains(text, "您必须完成人机验证才能继续使用") {
-	// 		continue
-	// 	}
-	// 	if m.handlers != nil && m.handlers.onRawIncomingEvent != nil {
-	// 		go m.handlers.onRawIncomingEvent(updateBytes)
-	// 	}
+		if len(updateBytes) == 0 {
+			continue
+		}
+		// text = string(updateBytes)
+		// if !strings.Contains(text, "请点击正确答案") && !strings.Contains(text, "您必须完成人机验证才能继续使用") {
+		// 	continue
+		// }
+		if m.handlers != nil && m.handlers.onRawIncomingEvent != nil {
+			go m.handlers.onRawIncomingEvent(updateBytes)
+		}
 
-	// 	clientID := m.getClientID(updateBytes)
-	// 	if clientID != nil {
-	// 		if clientChan, ok := m.getClientChannel(*clientID); ok {
-	// 			go m.writeClientEvent(clientChan, updateBytes)
+		clientID := m.getClientID(updateBytes)
+		if clientID != nil {
+			if clientChan, ok := m.getClientChannel(*clientID); ok {
+				go m.writeClientEvent(clientChan, updateBytes)
 
-	// 			continue
-	// 		} else {
-	// 			// TODO: Log Received Update For Unknown Client
-	// 			fmt.Printf("Received update for unknown client: %d\n", *clientID)
-	// 		}
-	// 	}
+				continue
+			} else {
+				// TODO: Log Received Update For Unknown Client
+				fmt.Printf("Received update for unknown client: %d\n", *clientID)
+			}
+		}
 
-	// 	// TODO: Log General Received Update, Doesn't Belong To Any Client
-	// 	fmt.Printf("Received update: %s\n", string(updateBytes))
-	// }
+		// TODO: Log General Received Update, Doesn't Belong To Any Client
+		fmt.Printf("Received update: %s\n", string(updateBytes))
+	}
 }
 
 func (m *Manager) getClientChannel(clientID int) (chan []byte, bool) {

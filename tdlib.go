@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"strings"
 	"sync"
 	"time"
 
@@ -101,57 +102,55 @@ func (t *TDLib) receiveUpdates() error {
 	go t.GetAuthorizationState()
 
 	for updateBytes := range t.updatesChan {
-		if updateBytes == nil || len(updateBytes) == 0 {
+		if len(updateBytes) == 0 {
 			continue
 		}
 
-		if t.handlers != nil && t.handlers.rawIncomingEvent != nil {
-			go t.handlers.rawIncomingEvent(updateBytes)
-		}
-
-		ie, err := incomingevents.GenericFromBytes(updateBytes)
-		if err != nil {
-			return err
-		}
-
-		if ie.Type == "error" && ie.RequestID == "" {
-			if t.handlers != nil && t.handlers.onError != nil {
-				errEvent, err := incomingevents.ErrorFromBytes(updateBytes)
-				if err != nil {
-					return err
-				}
-				go t.handlers.onError(errEvent)
+		text := string(updateBytes)
+		if strings.Contains(text, "updateConnectionState") || strings.Contains(text, "updateAuthorizationState") {
+			event, err := incomingevents.FromBytes(updateBytes)
+			if err != nil {
+				return err
 			}
-			continue
+			if t.handlers.onUpdateConnectionState != nil && event.Type == "updateConnectionState" && event.State != nil {
+				go t.handlers.onUpdateConnectionState(event.State.Type)
+			}
+
+			if t.handlers.onUpdateAuthorizationState != nil && event.Type == "updateAuthorizationState" && event.AuthorizationState != nil {
+				go t.handlers.onUpdateAuthorizationState(event.AuthorizationState.Type)
+			}
 		}
 
-		if ie.RequestID != "" {
-			go t.informResponse(ie.RequestID, updateBytes)
-			continue
-		}
+		// if t.handlers != nil && t.handlers.rawIncomingEvent != nil {
+		// 	go t.handlers.rawIncomingEvent(updateBytes)
+		// }
 
-		event, err := incomingevents.FromBytes(updateBytes)
-		if err != nil {
-			return err
-		}
+		// ie, err := incomingevents.GenericFromBytes(updateBytes)
+		// if err != nil {
+		// 	return err
+		// }
 
-		if t.handlers != nil && t.handlers.incomingEvent != nil {
-			go t.handlers.incomingEvent(event)
-		}
+		// if ie.Type == "error" && ie.RequestID == "" {
+		// 	if t.handlers != nil && t.handlers.onError != nil {
+		// 		errEvent, err := incomingevents.ErrorFromBytes(updateBytes)
+		// 		if err != nil {
+		// 			return err
+		// 		}
+		// 		go t.handlers.onError(errEvent)
+		// 	}
+		// 	continue
+		// }
 
-		if t.handlers.onUpdateConnectionState != nil && event.Type == "updateConnectionState" && event.State != nil {
-			go t.handlers.onUpdateConnectionState(event.State.Type)
-		}
+		// if ie.RequestID != "" {
+		// 	go t.informResponse(ie.RequestID, updateBytes)
+		// 	continue
+		// }
 
-		if t.handlers.authorizationHandler != nil && isAuthorizationEvent(event) {
-			go t.handlers.authorizationHandler.Process(t, event.AuthorizationState.Type)
-		}
+		// if t.handlers != nil && t.handlers.incomingEvent != nil {
+		// 	go t.handlers.incomingEvent(event)
+		// }
 
-		if t.handlers.onUpdateAuthorizationState != nil && event.Type == "updateAuthorizationState" && event.AuthorizationState != nil {
-			go t.handlers.onUpdateAuthorizationState(event.AuthorizationState.Type)
-		}
-
-		go t.handleEventType(event.Type, updateBytes)
+		// go t.handleEventType(event.Type, updateBytes)
 	}
 
 	return nil
