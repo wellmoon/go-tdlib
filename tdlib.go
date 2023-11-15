@@ -125,26 +125,26 @@ func (t *TDLib) receiveUpdates() error {
 		// 	go t.handlers.rawIncomingEvent(updateBytes)
 		// }
 
-		// ie, err := incomingevents.GenericFromBytes(updateBytes)
-		// if err != nil {
-		// 	return err
-		// }
+		ie, err := incomingevents.GenericFromBytes(updateBytes)
+		if err != nil {
+			return err
+		}
 
-		// if ie.Type == "error" && ie.RequestID == "" {
-		// 	if t.handlers != nil && t.handlers.onError != nil {
-		// 		errEvent, err := incomingevents.ErrorFromBytes(updateBytes)
-		// 		if err != nil {
-		// 			return err
-		// 		}
-		// 		go t.handlers.onError(errEvent)
-		// 	}
-		// 	continue
-		// }
+		if ie.Type == "error" && ie.RequestID == "" {
+			if t.handlers != nil && t.handlers.onError != nil {
+				errEvent, err := incomingevents.ErrorFromBytes(updateBytes)
+				if err != nil {
+					return err
+				}
+				go t.handlers.onError(errEvent)
+			}
+			continue
+		}
 
-		// if ie.RequestID != "" {
-		// 	go t.informResponse(ie.RequestID, updateBytes)
-		// 	continue
-		// }
+		if ie.RequestID != "" {
+			go t.informResponse(ie.RequestID, updateBytes)
+			continue
+		}
 
 		// if t.handlers != nil && t.handlers.incomingEvent != nil {
 		// 	go t.handlers.incomingEvent(event)
