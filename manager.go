@@ -111,7 +111,7 @@ func (m *Manager) receiveUpdates() {
 		updateBytes := m.receiveNextUpdate(10)
 
 		if len(updateBytes) == 0 {
-			time.Sleep(5 * time.Millisecond)
+			time.Sleep(10 * time.Millisecond)
 			continue
 		}
 		// text = string(updateBytes)
@@ -126,7 +126,7 @@ func (m *Manager) receiveUpdates() {
 		if clientID != nil {
 			if clientChan, ok := m.getClientChannel(*clientID); ok {
 				go m.writeClientEvent(clientChan, updateBytes)
-
+				time.Sleep(10 * time.Millisecond)
 				continue
 			} else {
 				// TODO: Log Received Update For Unknown Client
@@ -136,7 +136,7 @@ func (m *Manager) receiveUpdates() {
 
 		// TODO: Log General Received Update, Doesn't Belong To Any Client
 		fmt.Printf("Received update: %s\n", string(updateBytes))
-		time.Sleep(5 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 	}
 }
 
