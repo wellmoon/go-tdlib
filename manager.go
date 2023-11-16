@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sync"
+	"time"
 	"unsafe"
 
 	"github.com/sirupsen/logrus"
@@ -106,9 +107,11 @@ func (m *Manager) receiveNextUpdate(timeout float64) []byte {
 func (m *Manager) receiveUpdates() {
 	// text := ""
 	for {
+
 		updateBytes := m.receiveNextUpdate(10)
 
 		if len(updateBytes) == 0 {
+			time.Sleep(5 * time.Millisecond)
 			continue
 		}
 		// text = string(updateBytes)
@@ -133,6 +136,7 @@ func (m *Manager) receiveUpdates() {
 
 		// TODO: Log General Received Update, Doesn't Belong To Any Client
 		fmt.Printf("Received update: %s\n", string(updateBytes))
+		time.Sleep(5 * time.Millisecond)
 	}
 }
 
