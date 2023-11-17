@@ -33,7 +33,7 @@ type Manager struct {
 }
 
 // NewManager creates a new Manager instance
-func NewManager(handlers *ManagerHandlers, options *ManagerOptions) *Manager {
+func NewManager(handlers *ManagerHandlers, options *ManagerOptions, ms int) *Manager {
 	if options != nil {
 		C.set_log_message_callback(C.int(options.LogVerbosityLevel))
 
@@ -58,7 +58,7 @@ func NewManager(handlers *ManagerHandlers, options *ManagerOptions) *Manager {
 		options:  options,
 	}
 
-	go manager.receiveUpdates()
+	go manager.receiveUpdates(ms)
 
 	return manager
 }
