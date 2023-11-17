@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"sync"
-	"time"
 	"unsafe"
 
 	"github.com/sirupsen/logrus"
@@ -95,8 +94,13 @@ func (m *Manager) newClientID() int {
 	return int(result)
 }
 
+var c chan int8 = make(chan int8, 10)
+
 func (m *Manager) receiveNextUpdate(timeout float64) []byte {
-	time.Sleep(5 * time.Millisecond)
+	c <- 1
+	defer func() {
+		<-c
+	}()
 	result := C.td_receive(C.double(timeout))
 	if result == nil {
 		return nil
