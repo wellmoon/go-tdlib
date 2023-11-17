@@ -111,11 +111,11 @@ func (m *Manager) receiveNextUpdate(timeout float64) []byte {
 	return []byte(C.GoString(result))
 }
 
-func (m *Manager) receiveUpdates() {
+func (m *Manager) receiveUpdates(ms int) {
 	// text := ""
 	fmt.Println("================receiveUpdates===============")
 	for {
-		time.Sleep(time.Duration(5) * time.Millisecond)
+		time.Sleep(time.Duration(ms) * time.Millisecond)
 		updateBytes := m.receiveNextUpdate(10)
 
 		if len(updateBytes) == 0 {
