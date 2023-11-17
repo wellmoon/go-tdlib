@@ -33,7 +33,7 @@ type Manager struct {
 }
 
 // NewManager creates a new Manager instance
-func NewManager(handlers *ManagerHandlers, options *ManagerOptions, ms int) *Manager {
+func NewManager(handlers *ManagerHandlers, options *ManagerOptions, ms int, cnum int) *Manager {
 	if options != nil {
 		C.set_log_message_callback(C.int(options.LogVerbosityLevel))
 
@@ -57,7 +57,7 @@ func NewManager(handlers *ManagerHandlers, options *ManagerOptions, ms int) *Man
 		handlers: handlers,
 		options:  options,
 	}
-
+	c = make(chan int8, cnum)
 	go manager.receiveUpdates(ms)
 
 	return manager
@@ -95,7 +95,7 @@ func (m *Manager) newClientID() int {
 	return int(result)
 }
 
-var c chan int8 = make(chan int8, 1)
+var c chan int8
 var cc chan int8 = make(chan int8, 5)
 
 func (m *Manager) receiveNextUpdate(timeout float64) []byte {
@@ -107,11 +107,16 @@ func (m *Manager) receiveNextUpdate(timeout float64) []byte {
 	if result == nil {
 		return nil
 	}
+	res := C.GoString(result)
+	if len(c) == 5 {
+		fmt.Println(res)
+	}
 
-	return []byte(C.GoString(result))
+	return []byte(res)
 }
 
 func (m *Manager) receiveUpdates(ms int) {
+
 	// text := ""
 	fmt.Println("================receiveUpdates===============")
 	for {
