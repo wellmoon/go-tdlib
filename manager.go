@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sync"
+	"time"
 	"unsafe"
 
 	"github.com/sirupsen/logrus"
@@ -73,7 +74,7 @@ func (m *Manager) NewClient(
 
 	clientID := m.newClientID()
 
-	updateChannel := make(chan []byte)
+	updateChannel := make(chan []byte, 10)
 
 	m.clientUpdateChannels.Store(clientID, updateChannel)
 
@@ -95,6 +96,7 @@ func (m *Manager) newClientID() int {
 }
 
 var c chan int8 = make(chan int8, 5)
+var cc chan int8 = make(chan int8, 5)
 
 func (m *Manager) receiveNextUpdate(timeout float64) []byte {
 	c <- 1
@@ -113,7 +115,7 @@ func (m *Manager) receiveUpdates() {
 	// text := ""
 	fmt.Println("================receiveUpdates===============")
 	for {
-
+		time.Sleep(time.Duration(5) * time.Millisecond)
 		updateBytes := m.receiveNextUpdate(10)
 
 		if len(updateBytes) == 0 {
