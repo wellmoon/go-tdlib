@@ -94,7 +94,7 @@ func (m *Manager) newClientID() int {
 	return int(result)
 }
 
-var c chan int8 = make(chan int8, 10)
+var c chan int8 = make(chan int8, 5)
 
 func (m *Manager) receiveNextUpdate(timeout float64) []byte {
 	c <- 1
@@ -111,6 +111,7 @@ func (m *Manager) receiveNextUpdate(timeout float64) []byte {
 
 func (m *Manager) receiveUpdates() {
 	// text := ""
+	fmt.Println("================receiveUpdates===============")
 	for {
 
 		updateBytes := m.receiveNextUpdate(10)
